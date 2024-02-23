@@ -40,7 +40,7 @@ entry:
     mov cx, 0x0000 ; segment
     call flopread
 
-    call bootCheck
+    call bootPrint
 
     ; enable a20 gate and error out if unsuccessful
 
@@ -331,17 +331,14 @@ gdt_end:
 
 Sector2:
 
-; This check asks the user if he wants to boot our floppy/CDROM and if it times out then we
-; attempt to boot from a hard disk.
-bootCheck:
+bootPrint:
     mov si, newLineStr
     call print
-
-    ; Get initial tick value
-    call getCurrentTick
-    mov dword [lastSystemTime], ebx
-
-    jmp .bootCheckOK
+    mov si, bootingStr
+    call print
+    mov si, newLineStr
+    call print
+    ret
 
 .bootExit:    
     mov ax, 0x4b00
@@ -394,15 +391,9 @@ bootCheck:
     int 13h         ; DISK - READ SECTORS INTO MEMORY
     retn
 
-.bootCheckOK:
-    ; User pressed a key. We can now resume booting.
-    mov si, newLineStr
-    call print
-    ret
-
-
 newLineStr db 0xd, 0xa, 0
 bootErrStr db 0xd, 0xa, ' No bootable Disk found! Halting.', 0
+bootingStr db 0xd, 0xa, 'Booting from floppy disk...', 0
 
 lastSystemTime dd 0
 
