@@ -393,7 +393,7 @@ bootPrint:
 
 newLineStr db 0xd, 0xa, 0
 bootErrStr db 0xd, 0xa, ' No bootable Disk found! Halting.', 0
-bootingStr db 0xd, 0xa, 'Booting from floppy disk...', 0
+bootingStr db 0xd, 0xa, 'Loading Linux from floppy disk...', 0
 
 lastSystemTime dd 0
 
