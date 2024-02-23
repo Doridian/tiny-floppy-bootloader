@@ -341,52 +341,7 @@ bootCheck:
     call getCurrentTick
     mov dword [lastSystemTime], ebx
 
-.waitEnterLoop:
-
-    mov si, bootStr
-    call print
-
-    ; check keyboard buffer
-    mov ah, 0x01     ; chek for keystroke
-    int 0x16
-    jz .delay1Second ; No key was pressed
-
-    ; Check for F8 (user wants to enter SafeMode in existing installation probably)
-
-    cmp ax, 0x4200
-    jnz .bootCheckOK
-
-.delay1Second:
-    ; I tried to use int 0x15 with ax=0x8600 here but for some reason this is way too fast on 86box...
-    ; So I have to use another method.
-    ;    mov cx, 0xf
-    ;    mov dx, 0x4240
-    ;    mov ax, 0x8600
-    ;    int 0x15 
-    call getCurrentTick
-
-    ; Check for midnight rollover
-    test al, al
-    jz .noMidnight
-
-    add ebx, 0x1800B0; 0x1800B0 per 24 hrs
-
-.noMidnight:
-    ; Check if this is a second's worth of difference.
-    mov ecx, dword [lastSystemTime]
-    mov eax, ebx
-    sub eax, ecx
-    cmp eax, 18 ; It's actually 18.2 clocks per second but good enough...
-    jl .waitEnterLoop ; Second hasnt elapsed yet, back to the loop
-
-    mov dword [lastSystemTime], ebx
-    mov al, byte [bootTimerStr]
-    dec al
-    cmp al, 0x30 ; '0' means we've timed out
-    jz .bootExit
-    mov byte [bootTimerStr], al
-
-    jmp .waitEnterLoop
+    jmp .bootCheckOK
 
 .bootExit:    
     mov ax, 0x4b00
@@ -447,8 +402,6 @@ bootCheck:
 
 
 newLineStr db 0xd, 0xa, 0
-bootStr db ' Press a key <except F8> to run QuickInstall ('
-bootTimerStr db '4 seconds left)', 0x0d, 0 ; the 0x0d means we go back to the start of the line so we can update the counter
 bootErrStr db 0xd, 0xa, ' No bootable Disk found! Halting.', 0
 
 lastSystemTime dd 0
