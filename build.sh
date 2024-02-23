@@ -76,4 +76,4 @@ else
     dd if=/dev/zero bs=1 count=$(($DISKSIZE - $TOTAL)) >> $OUTPUT
 fi
 
-echo "concatenated bootloader, kernel and initrd into ::> $OUTPUT"
+echo "concatenated bootloader, kernel and initrd (total $TOTAL) into ::> $OUTPUT"
