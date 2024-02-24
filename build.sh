@@ -67,7 +67,7 @@ if [[ $K_PAD -lt 1024 ]]; then
 fi
 
 # make an objdump of the bootloader for debugging purposes
-objdump -b binary --adjust-vma=0x7c00 -D bootloader.bin -m i8086 -M intel > objdump_out.objdump
+${OBJDUMP:-objdump} -b binary --adjust-vma=0x7c00 -D bootloader.bin -m i8086 -M intel > objdump_out.objdump
 
 TOTAL=`stat -c %s $OUTPUT`
 if [[ $TOTAL -gt $DISKSIZE ]]; then
